@@ -1,0 +1,8 @@
+langchain
+langchain-community
+langchain-groq
+streamlit
+python-dotenv
+PyPDF2
+
+-e .
