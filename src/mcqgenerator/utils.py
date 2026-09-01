@@ -9,11 +9,12 @@ def read_file(file):
             pdf_reader = PyPDF2.PdfReader(file)
             text = ""
             for page in pdf_reader.pages:
-                text += page.extract_text()
+                extracted = page.extract_text()
+                if extracted:
+                    text += extracted
             return text
-
         except Exception as e:
-            raise Exception("error reading the PDF file")
+            raise Exception(f"error reading the PDF file: {e}")
 
     elif file.name.endswith(".txt"):
         return file.read().decode("utf-8")
