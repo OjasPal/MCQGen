@@ -9,7 +9,7 @@ from src.mcqgenerator.MCQGenerator import generate_evaluate_chain
 from langchain_core.callbacks import UsageMetadataCallbackHandler
 import streamlit as st
 
-with open(r'C:\Users\Ojas Pal\mcqgen\Response.json', 'r') as file:
+with open('Response.json', 'r') as file:
     RESPONSE_JSON = json.load(file)
 
 # Creating a title for the app
