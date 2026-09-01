@@ -1,5 +1,6 @@
 import os
 import json
+import streamlit as st
 import pandas as pd
 import traceback
 from dotenv import load_dotenv, find_dotenv
@@ -15,7 +16,8 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.runnables import RunnableLambda
 
 load_dotenv()
-KEY=os.getenv("GROQ_API_KEY")
+
+KEY=os.getenv("GROQ_API_KEY") or st.secrets["GROQ_API_KEY"]
 
 llm = ChatGroq(groq_api_key=KEY, model_name="openai/gpt-oss-20b", temperature=0.7)
 
