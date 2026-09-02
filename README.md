@@ -1,6 +1,6 @@
 # 📝 MCQGen — AI-Powered MCQ Generator
 
-MCQGen is a simple end-to-end GenAI project that takes a PDF or text file as input and automatically generates multiple-choice questions (MCQs) from its content using an LLM. Built as my first solo project on my GenAI learning journey.
+MCQGen is a simple end-to-end GenAI project that takes a PDF or text file as input and automatically generates multiple-choice questions (MCQs) from its content using an LLM.
 
 **Live App:**  [https://mcqgen-xaa35jepbrgpecswqhpqi5.streamlit.app/](https://mcqgen-xaa35jepbrgpecswqhpqi5.streamlit.app/)
 
