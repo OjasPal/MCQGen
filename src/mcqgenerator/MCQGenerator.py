@@ -17,18 +17,20 @@ from langchain_core.runnables import RunnableLambda
 
 load_dotenv()
 
-KEY=os.getenv("GROQ_API_KEY") or st.secrets["GROQ_API_KEY"]
+KEY = os.getenv("GROQ_API_KEY") or st.secrets["GROQ_API_KEY"]
 
+logging.info("Initializing ChatGroq LLM")
 llm = ChatGroq(groq_api_key=KEY, model_name="openai/gpt-oss-20b", temperature=0.7)
 
 import re
 def clean_json_output(text: str) -> str:
+    logging.info("Cleaning raw LLM output (stripping markdown fences if present)")
     text = re.sub(r"^```(?:json)?\s*", "", text.strip())
     text = re.sub(r"\s*```$", "", text)
     return text.strip()
 
 
-TEMPLATE="""
+TEMPLATE = """
 Text:{text}
 You are an expert MCQ maker. Given the above text, it is your job to \
 create a quiz of {number} multiple choice questions for {subject} students in {tone} tone.
@@ -45,9 +47,9 @@ quiz_generation_prompt = PromptTemplate(
     template=TEMPLATE
 )
 
-quiz_chain = quiz_generation_prompt | llm | StrOutputParser() |  RunnableLambda(clean_json_output)
+quiz_chain = quiz_generation_prompt | llm | StrOutputParser() | RunnableLambda(clean_json_output)
 
-TEMPLATE2="""
+TEMPLATE2 = """
 You are an expert english grammarian and writer. Given a Multiple Choice Quiz for {subject} students.\
 You need to evaluate the complexity of the question and give a complete analysis of the quiz. Only use at max 50 words for complexity
 if the quiz is not at per with the cognitive and analytical abilities of the students,\
@@ -65,6 +67,7 @@ quiz_evaluation_prompt = PromptTemplate(
 
 review_chain = quiz_evaluation_prompt | llm | StrOutputParser()
 
+logging.info("Building generate_evaluate_chain (quiz generation + review)")
 generate_evaluate_chain = (
     RunnablePassthrough.assign(quiz=quiz_chain)
     | RunnablePassthrough.assign(review=review_chain)
