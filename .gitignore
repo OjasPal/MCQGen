@@ -1,2 +1,8 @@
 mcqgen
 .env
+.idea/
+experiment/Artificial intelligence.csv
+logs/
+mcqgenerator.egg-info/
+src/__pycache__/
+src/mcqgenerator/__pycache__/
