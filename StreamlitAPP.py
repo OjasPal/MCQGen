@@ -6,7 +6,6 @@ import traceback
 from dotenv import load_dotenv, find_dotenv
 from src.mcqgenerator.utils import read_file, parse_quiz_items, render_mcqs_html
 from src.mcqgenerator.logger import logging
-from src.mcqgenerator.MCQGenerator import generate_evaluate_chain
 from langchain_core.callbacks import UsageMetadataCallbackHandler
 import streamlit as st
 
@@ -172,6 +171,7 @@ if submitted:
     else:
         with st.spinner("Generating MCQs and evaluating quiz..."):
             try:
+                from src.mcqgenerator.MCQGenerator import generate_evaluate_chain
                 text = read_file(uploaded_file)
                 callback = UsageMetadataCallbackHandler()
                 response = generate_evaluate_chain.invoke(
@@ -199,12 +199,8 @@ if st.session_state.quiz_items:
     show_answers = st.checkbox("Show answers", value=False, key="show_answers_toggle")
 
     questions_html = render_mcqs_html(st.session_state.quiz_items, show_answers=show_answers)
-    st.markdown(questions_html, unsafe_allow_html=True)
+    st.html(questions_html)
 
     if st.session_state.quiz_review:
-        escaped_review = html.escape(st.session_state.quiz_review)
-        report_html = f'''<div class="report-card">
-            <div class="report-heading">📊 Quiz Quality Evaluation Report</div>
-            <div class="report-content">{escaped_review}</div>
-        </div>'''
-        st.markdown(report_html, unsafe_allow_html=True)
+        st.markdown("### 📊 Quiz Quality Evaluation Report")
+        st.markdown(st.session_state.quiz_review)
