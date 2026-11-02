@@ -203,4 +203,6 @@ if st.session_state.quiz_items:
 
     if st.session_state.quiz_review:
         st.markdown("### 📊 Quiz Quality Evaluation Report")
-        st.markdown(st.session_state.quiz_review)
+        import re
+        cleaned_review = re.split(r"(?i)(?:#*\s*updated\s+quiz|updated\s+quiz\s*:?)", st.session_state.quiz_review)[0].strip()
+        st.markdown(cleaned_review)
