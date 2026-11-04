@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import traceback
 from dotenv import load_dotenv, find_dotenv
-from src.mcqgenerator.utils import read_file, parse_quiz_items, render_mcqs_html
+from src.mcqgenerator.utils import read_file, parse_quiz_items, render_mcqs_html, generate_mcqs_docx
 from src.mcqgenerator.logger import logging
 from langchain_core.callbacks import UsageMetadataCallbackHandler
 import streamlit as st
@@ -150,6 +150,10 @@ if "quiz_items" not in st.session_state:
     st.session_state.quiz_items = []
 if "quiz_review" not in st.session_state:
     st.session_state.quiz_review = ""
+if "quiz_subject" not in st.session_state:
+    st.session_state.quiz_subject = ""
+if "quiz_tone" not in st.session_state:
+    st.session_state.quiz_tone = ""
 
 with st.form("user_inputs"):
     uploaded_file = st.file_uploader("Source Material (.pdf or .txt)", type=["pdf", "txt"])
@@ -188,6 +192,8 @@ if submitted:
                     quiz = response.get("quiz", "")
                     st.session_state.quiz_items = parse_quiz_items(quiz)
                     st.session_state.quiz_review = response.get("review", "")
+                    st.session_state.quiz_subject = subject
+                    st.session_state.quiz_tone = tone
                 else:
                     st.error("Unexpected response format from model.")
             except Exception as e:
@@ -195,7 +201,12 @@ if submitted:
                 st.error("Error generating MCQs. Please verify API key and input content.")
 
 if st.session_state.quiz_items:
-    st.markdown("### 📋 Generated Questions")
+    c1, c2 = st.columns([3, 1], vertical_alignment="center")
+    with c1:
+        st.markdown("### 📋 Generated Questions")
+    with c2:
+        docx_bytes = generate_mcqs_docx(st.session_state.quiz_items, subject=st.session_state.get("quiz_subject", ""), tone=st.session_state.get("quiz_tone", ""))
+        st.download_button(label="📥 Export as .docx", data=docx_bytes, file_name="generated_mcqs.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", key="download_mcqs_docx")
     show_answers = st.checkbox("Show answers", value=False, key="show_answers_toggle")
 
     questions_html = render_mcqs_html(st.session_state.quiz_items, show_answers=show_answers)
