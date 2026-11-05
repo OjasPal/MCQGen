@@ -1,9 +1,18 @@
 import os
+import sys
+import importlib
 import html
 import json
 import pandas as pd
 import traceback
 from dotenv import load_dotenv, find_dotenv
+
+_APP_DIR = os.path.dirname(os.path.abspath(__file__))
+if _APP_DIR not in sys.path:
+    sys.path.insert(0, _APP_DIR)
+import src.mcqgenerator.utils as _mcq_utils
+if not hasattr(_mcq_utils, "generate_mcqs_docx"):
+    _mcq_utils = importlib.reload(_mcq_utils)
 from src.mcqgenerator.utils import read_file, parse_quiz_items, render_mcqs_html, generate_mcqs_docx
 from src.mcqgenerator.logger import logging
 from langchain_core.callbacks import UsageMetadataCallbackHandler
@@ -144,7 +153,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="hero-title">⚡ MCQGen — Intelligent Quiz Studio</div>', unsafe_allow_html=True)
-st.markdown('<div class="hero-sub">Generate neatly structured multiple-choice questions with AI-powered quality review.</div>', unsafe_allow_html=True)
+st.markdown('<div class="hero-sub">Generate structured multiple-choice questions with AI-powered quality review.</div>', unsafe_allow_html=True)
 
 if "quiz_items" not in st.session_state:
     st.session_state.quiz_items = []
@@ -216,4 +225,5 @@ if st.session_state.quiz_items:
         st.markdown("### 📊 Quiz Quality Evaluation Report")
         import re
         cleaned_review = re.split(r"(?i)(?:#*\s*updated\s+quiz|updated\s+quiz\s*:?)", st.session_state.quiz_review)[0].strip()
+        cleaned_review = re.sub(r"(?i)\s*\(\s*(?:<|<=|≤|under|max|at\s+max)?\s*50\s+words\s*\)", "", cleaned_review)
         st.markdown(cleaned_review)
