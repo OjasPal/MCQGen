@@ -23,7 +23,6 @@ st.set_page_config(page_title="MCQGen — AI Quiz Maker", page_icon="⚡", layou
 with open('Response.json', 'r') as file:
     RESPONSE_JSON = json.load(file)
 
-# Black Glassmorphism theme styles
 st.markdown("""
 <style>
     .stApp, [data-testid="stAppViewContainer"] {
